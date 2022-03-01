@@ -4,8 +4,8 @@ import time
 import pickle
 from multiprocessing import Process, Manager
 
-from instance_mcnf import generate_instance, mutate_instance
-from mcnf_dynamic import *
+from .instance_mcnf import generate_instance, mutate_instance
+from .mcnf_dynamic import *
 
 def launch_dataset(global_path, dataset_name, algorithm_list, nb_repetitions, nb_workers, duration_before_timeout):
     # Launches all the algorithms to test on the instance present in the dataset directory

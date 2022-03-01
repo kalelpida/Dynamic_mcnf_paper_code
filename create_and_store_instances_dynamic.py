@@ -4,7 +4,7 @@ import time
 import pickle
 
 
-from instance_mcnf import generate_instance, mutate_instance
+from .instance_mcnf import generate_instance, mutate_instance
 
 
 nb_repetitions = 10

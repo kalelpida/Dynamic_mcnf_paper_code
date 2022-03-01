@@ -1,10 +1,10 @@
 import random
 import time
 
-from mcnf_dynamic import *
-from instance_mcnf import generate_instance, mutate_instance
-from k_shortest_path import k_shortest_path_all_destination
-from launch_dataset_dynamic import analyse_results_list
+from .mcnf_dynamic import *
+from .instance_mcnf import generate_instance, mutate_instance
+from .k_shortest_path import k_shortest_path_all_destination
+from .launch_dataset_dynamic import analyse_results_list
 
 
 def update_graph_capacity(graph, path, demand, reverse_graph=False):

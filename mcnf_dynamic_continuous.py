@@ -4,8 +4,7 @@ import numpy as np
 import time
 import gurobipy
 
-from k_shortest_path import k_shortest_path_all_destination
-
+from .k_shortest_path import k_shortest_path_all_destination
 
 def dijkstra(graph, initial_node, destination_node=None, return_path=False):
     priority_q = [(0, initial_node, None)]

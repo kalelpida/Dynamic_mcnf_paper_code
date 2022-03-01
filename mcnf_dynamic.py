@@ -3,9 +3,9 @@ import random
 import numpy as np
 import time
 
-from mcnf_dynamic_column_generation import create_column_generation_model, run_column_generation
-from k_shortest_path import k_shortest_path_all_destination
-from mcnf_dynamic_continuous import *
+from .mcnf_dynamic_column_generation import create_column_generation_model, run_column_generation
+from .k_shortest_path import k_shortest_path_all_destination
+from .mcnf_dynamic_continuous import *
 
 
 def find_fitting_most_capacited_path(graph1, graph2, origin, destination, minimum_capacity):
@@ -353,7 +353,7 @@ def SRR_arc_node_one_timestep(graph, commodity_list, initial_path_list, actualis
     # Try to minimize the overload and the number of path changes
     # The SRR heuristic is used on an arc-node formulation
 
-    nb_commodities = len(initial_path_list)
+    nb_commodities = len(commodity_list)
     nb_nodes = len(graph)
     demand_list = [c[2] for c in commodity_list]
     results_list = [None for commodity_index in range(nb_commodities)]

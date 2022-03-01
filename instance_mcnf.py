@@ -3,7 +3,6 @@ import heapq as hp
 import numpy as np
 import time
 
-
 def generate_instance(graph_type, graph_generator_inputs, demand_generator_inputs):
     # this function generates an intances according to the asked caracteristics :
     # - first a graph is generated : a grid graph or a random graph

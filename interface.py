@@ -17,8 +17,8 @@ def nx2graph(graphnx, verif=False):
 	g=[{} for _ in graphnx.nodes]
 	for u,v,data in graphnx.edges(data=True):
 		#satellite links are bidirectionnal
-		g[u][v]=data['weight']#10000000#data['weight']
-		g[v][u]=data['weight']#10000000#Mb Full duplex?
+		g[u][v]=10000000#data['weight']
+		g[v][u]=10000000#Mb Full duplex?
 	return g
 
 def fstate2sol(fstate,list_commodities):

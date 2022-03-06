@@ -2,6 +2,7 @@ import networkx as nx
 from .mcnf_dynamic import SRR_arc_node_one_timestep
 
 def graph2nx(graphf):
+	#use for tests only, the weight attribute may be the bandwidth, not the distance as expected to run Floyd-Warshall
 	g=nx.Graph()
 	g.add_nodes_from([i for i in range(len(graphf))])
 	for node,neighs in enumerate(graphf):
@@ -9,6 +10,7 @@ def graph2nx(graphf):
 	return g
 	
 def nx2graph(graphnx, verif=False): 
+	#converts networkx graph to graph suitable with Francois's algos
 	if verif:
 		for i in graphnx.nodes:
 			assert type(i)==int
@@ -17,11 +19,14 @@ def nx2graph(graphnx, verif=False):
 	g=[{} for _ in graphnx.nodes]
 	for u,v,data in graphnx.edges(data=True):
 		#satellite links are bidirectionnal
-		g[u][v]=10000000#data['weight']
-		g[v][u]=10000000#Mb Full duplex?
+		#to make an inversible conversion, set g[u][v],g[v][u] =  data['weight'],data['weight']
+		#in Francois's algo, all we care about is bandwidth
+		g[u][v]=10000000#by default 10Mb∕s
+		g[v][u]=10000000
 	return g
 
 def fstate2sol(fstate,list_commodities):
+	#converts network solution to a solution as computed by Francois's algo
 	results_list = [None for _ in list_commodities]
 	if fstate is None:#fstate can be initialised with None
 		return results_list
@@ -38,23 +43,23 @@ def fstate2sol(fstate,list_commodities):
 	return results_list
 
 def sol2fstate(solutions,sat_neighbor_to_if,num_isls_per_sat,gid_to_sat_gsl_if_idx,num_ground_stations):
+	#converts Francois's algo output to a network solution
 	fstate={}
 	for chemin in solutions:
-		if chemin:
-			dest=chemin[-1]
-			fstate[(chemin[0],dest)]=(chemin[2],0,num_isls_per_sat[chemin[2]] + gid_to_sat_gsl_if_idx[dest-num_ground_stations])
-			fstate[(chemin[-2],dest)]=(dest,num_isls_per_sat[chemin[-2]] + gid_to_sat_gsl_if_idx[dest-num_ground_stations],0)
-			for k in range(1,len(chemin)-1):
-				fstate[(chemin[k],dest)]= (
-                                    chemin[k+1],
-                                    sat_neighbor_to_if[(chemin[k], chemin[k+1])],
-                                    sat_neighbor_to_if[(chemin[k+1], chemin[k])])
+		dest=chemin[-1]
+		fstate[(chemin[0],dest)]=(chemin[2],0,num_isls_per_sat[chemin[2]] + gid_to_sat_gsl_if_idx[dest-num_ground_stations])
+		fstate[(chemin[-2],dest)]=(dest,num_isls_per_sat[chemin[-2]] + gid_to_sat_gsl_if_idx[dest-num_ground_stations],0)
+		for k in range(1,len(chemin)-1):
+			fstate[(chemin[k],dest)]= (
+								chemin[k+1],
+								sat_neighbor_to_if[(chemin[k], chemin[k+1])],
+								sat_neighbor_to_if[(chemin[k+1], chemin[k])])
 	return fstate
 	
 
 def elimineLiensImpossibles(graph,commodites):
-	commodites_simplifiees=[]
-	diff_commodites=[]#id des commodites supprimees
+	commodites_simplifiees=[]#commodities
+	diff_commodites=[]#ids of unused commodities
 	communicabilite=nx.algorithms.communicability_alg.communicability(graph)
 	for idcomm,com in enumerate(commodites):
 		src,dst,_=com
